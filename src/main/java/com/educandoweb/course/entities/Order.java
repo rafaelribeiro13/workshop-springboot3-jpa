@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.educandoweb.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -22,7 +24,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_order")
-public class Order implements Serializable {
+public class Order extends RepresentationModel<Order> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

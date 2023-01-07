@@ -1,8 +1,12 @@
 package com.educandoweb.course.resources;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +26,22 @@ public class ProductResource {
 	@GetMapping
 	public ResponseEntity<List<Product>> findAll() {
 		List<Product> list = service.findAll();
+		
+		if (!list.isEmpty()) {
+			for (Product prod : list) {
+				Long id = prod.getId();
+				Link link = linkTo(methodOn(ProductResource.class).findById(id)).withSelfRel();
+				prod.add(link);
+			}
+		}
+		
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Product> findById(@PathVariable Long id) {
 		Product user = service.findById(id);
+		user.add(linkTo(methodOn(ProductResource.class).findAll()).withRel("Product List"));
 		return ResponseEntity.ok().body(user);
 	}
 	
